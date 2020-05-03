@@ -15,7 +15,10 @@ const initialState = {
 };
 
 export default function(state = initialState, action) {
-  switch(action.type) {
+  const { screams, scream } = state;
+  const { type, payload } = action;
+
+  switch(type) {
     case LOADING_DATA:
       return {
         ...state,
@@ -24,29 +27,29 @@ export default function(state = initialState, action) {
     case SET_SCREAMS:
       return {
         ...state,
-        screams: action.payload,
+        screams: payload,
         loading: false
       };
     case SET_SCREAM:
       return {
         ...state,
-        scream: action.payload
+        scream: payload
       }
     case LIKE_SCREAM:
     case UNLIKE_SCREAM:
-      let index = state.screams.findIndex(scream => scream.screamId === action.payload.screamId);
-      state.screams[index] = action.payload;
-      if (state.scream.screamId === action.payload.screamId) {
-        state.scream = action.payload;
-      }
       return {
-        ...state
+        ...state,
+        screams: screams.map(scream => (
+          scream.screamId === payload.screamId ? payload : scream
+        )),
+        scream: {
+          ...(scream.screamId === payload.screamId ? payload : scream)
+        }
       };
     case DELETE_SCREAM:
-      let deleteIndex = state.screams.findIndex(scream => scream.screamId === action.payload)
-      state.screams.splice(deleteIndex, 1);
       return {
-        ...state
+        ...state,
+        screams: screams.filter(scream => scream.screamId !== payload)
       }
     case POST_SCREAM:
       return {
