@@ -26,6 +26,10 @@ import axios from 'axios';
 
 const theme = createMuiTheme(themeFile);
 
+if (process.env.NODE_ENV === 'production') {
+  axios.defaults.baseURL = 'https://asia-east2-socialape-bdca8.cloudfunctions.net/api';
+}
+
 const token = localStorage.FBIdToken;
 if (token) {
   const decodedToken = jwtDecode(token);
